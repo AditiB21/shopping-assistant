@@ -15,7 +15,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
 .chat-bar{padding:8px 14px;border-top:.5px solid var(--color-border-tertiary);display:flex;gap:8px;align-items:center;flex-shrink:0;background:var(--color-background-primary)}
 .chat-box{flex:1;border:2px solid var(--color-text-primary);border-radius:24px;padding:7px 12px;display:flex;align-items:center;gap:7px;background:var(--color-background-primary)}
 .chat-txt{flex:1;font-size:11px;color:var(--color-text-tertiary)}
-.mic-b{width:26px;height:26px;border-radius:50%;background:var(--color-background-secondary);border:.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;flex-shrink:0}
+.mic-b{width:13px;height:13px;flex-shrink:0;cursor:pointer;color:var(--color-text-tertiary)}
 .send-b{width:30px;height:30px;border-radius:50%;background:var(--color-text-primary);color:var(--color-background-primary);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0;flex-shrink:0}
 
 /* Tool screens chat bubbles */
@@ -267,8 +267,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     </div>
   </div>
   <div class="chat-bar">
-    <div class="mic-b">🎙</div>
-    <div class="chat-box"><span class="chat-txt">Ask anything across all assistants...</span></div>
+    <div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Ask anything across all assistants...</span></div>
     <div class="send-b">↑</div>
   </div>
   <div class="bnav">
@@ -306,7 +305,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
       <div class="fc amber-bg" style="border-color:#FAC775" onclick="go('pg-dish')"><div class="fc-tag amber-d">Monsoon special</div><div class="fc-title" style="color:#2C2C2A">Masala Chai + Pakoras</div><div class="fc-sub amber-txt">3 ingredients to order. Rest you have at home.</div><div class="fc-action amber-d">Get ingredients →</div></div>
     </div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Type your grocery list in any language...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Type your grocery list in any language...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
 </div>
 
 <!-- ═══ SMART CART ════════════════════════════════════════════ -->
@@ -328,7 +327,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
       <div class="btn-sec">Keep everything on JioMart</div>
     </div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Edit your list or ask about items...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Edit your list or ask about items...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
 </div>
 
 <!-- ═══ CART RESULT (from feed) ══════════════════════════════ -->
@@ -346,7 +345,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
       <div class="btn-sec">Edit before ordering</div>
     </div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Make changes to this cart...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Make changes to this cart...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
 </div>
 
 <!-- ═══ GROCERY TRACKER ══════════════════════════════════════ -->
@@ -371,7 +370,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     </div>
     <div class="btn-primary" style="background:#1D9E75;color:white;align-self:stretch" onclick="go('pg-cart')">Add low items to Smart Cart →</div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask about your pantry...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Ask about your pantry...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
 </div>
 
 <!-- ═══ DISH TO CART ══════════════════════════════════════════ -->
@@ -398,7 +397,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
       <div class="btn-primary" style="background:#BA7517;color:white">Smart Cart mein add karo →</div>
     </div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Koi bhi dish ka naam...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Koi bhi dish ka naam...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
 </div>
 
 <!-- Dish result shortcut -->
@@ -417,7 +416,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     </div>
     <div class="btn-primary" style="background:#BA7517;color:white;align-self:stretch" onclick="go('pg-cart')">Smart Cart mein add karo →</div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Koi aur dish add karo...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Koi aur dish add karo...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
 </div>
 
 <!-- ═══ THE DRESSING ROOM ════════════════════════════════════ -->
@@ -524,7 +523,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     </div>
   </div>
 
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Describe your occasion or style...</span></div><div class="send-b" style="background:#534AB7">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Describe your occasion or style...</span></div><div class="send-b" style="background:#534AB7">↑</div></div>
 </div>
 
 <!-- ═══ BEAUTY MAGAZINE HOME ════════════════════════════════ -->
@@ -559,7 +558,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
       </div>
     </div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask about beauty, skincare, ingredients...</span></div><div class="send-b" style="background:#993556">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Ask about beauty, skincare, ingredients...</span></div><div class="send-b" style="background:#993556">↑</div></div>
 </div>
 
 <!-- ═══ INGREDIENT STORIES ═══════════════════════════════════ -->
@@ -581,7 +580,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
       <div style="border:.5px solid var(--color-border-secondary);border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;background:var(--color-background-secondary)" onclick="go('pg-price')">Check price →</div>
     </div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Check another product...</span></div><div class="send-b" style="background:#993556">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Check another product...</span></div><div class="send-b" style="background:#993556">↑</div></div>
 </div>
 
 <!-- ═══ PRICE WATCH ═══════════════════════════════════════════ -->
@@ -604,7 +603,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     <div class="bme">Yes, set price alert</div>
     <div class="bai">Done — you'll be notified when this drops below Rs 380 on any platform.</div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Search any beauty product...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Search any beauty product...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
 </div>
 
 <!-- ═══ ROUTINE EDIT ══════════════════════════════════════════ -->
@@ -627,7 +626,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     <div class="bai">Updated. AHA moved to your PM routine. AM stack is now clean — no conflicts.</div>
     <div class="btn-primary" style="background:#1D9E75;color:white;align-self:stretch">Routine updated ✓</div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask about your routine...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Ask about your routine...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
 </div>
 
 <!-- ═══ THE GUIDE ════════════════════════════════════════════ -->
@@ -641,7 +640,7 @@ body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);bac
     <div class="bai">PM skin cycling routine added to your Routine Edit. Uses your AHA on Night 1, a beginner 0.025% retinol on Night 2 (Rs 390 on Amazon), and just moisturiser on recovery nights.</div>
     <div style="align-self:flex-start"><div style="border:.5px solid var(--color-border-secondary);border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;background:var(--color-background-secondary)" onclick="go('pg-routine')">View in Routine Edit →</div></div>
   </div>
-  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask anything about beauty...</span></div><div class="send-b" style="background:#993C1D">↑</div></div>
+  <div class="chat-bar"><div class="chat-box"><svg class="mic-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg><span class="chat-txt">Ask anything about beauty...</span></div><div class="send-b" style="background:#993C1D">↑</div></div>
 </div>
 
 </div>
