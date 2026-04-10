@@ -1,0 +1,729 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);background:transparent;padding:12px 0 28px;display:flex;flex-direction:column;align-items:center}
+.hint{font-size:11px;color:var(--color-text-secondary);margin-bottom:14px;text-align:center;line-height:1.6}
+.phone{width:346px;background:var(--color-background-secondary);border-radius:50px;padding:8px;border:1px solid var(--color-border-secondary)}
+.screen{width:330px;height:668px;background:var(--color-background-primary);border-radius:44px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.sbar{display:flex;justify-content:space-between;align-items:center;padding:10px 24px 2px;font-size:11px;font-weight:500;flex-shrink:0}
+.pc{flex:1;position:relative;overflow:hidden}
+.pg{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--color-background-primary);transition:transform .26s cubic-bezier(.4,0,.2,1);transform:translateX(100%)}
+.pg.active{transform:translateX(0)}
+.pg.behind{transform:translateX(-18%)}
+
+/* Chat bar — black border, on every screen */
+.chat-bar{padding:8px 14px;border-top:.5px solid var(--color-border-tertiary);display:flex;gap:8px;align-items:center;flex-shrink:0;background:var(--color-background-primary)}
+.chat-box{flex:1;border:2px solid var(--color-text-primary);border-radius:24px;padding:7px 12px;display:flex;align-items:center;gap:7px;background:var(--color-background-primary)}
+.chat-txt{flex:1;font-size:11px;color:var(--color-text-tertiary)}
+.mic-b{width:26px;height:26px;border-radius:50%;background:var(--color-background-secondary);border:.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;flex-shrink:0}
+.send-b{width:30px;height:30px;border-radius:50%;background:var(--color-text-primary);color:var(--color-background-primary);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;flex-shrink:0;flex-shrink:0}
+
+/* Tool screens chat bubbles */
+.chat-scroll{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.bai{background:var(--color-background-secondary);align-self:flex-start;border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:11.5px;line-height:1.55;max-width:86%}
+.bme{align-self:flex-end;border:.5px solid var(--color-border-secondary);border-radius:14px 4px 14px 14px;padding:9px 12px;font-size:11.5px;line-height:1.55;max-width:86%}
+
+/* Top bar */
+.tool-hd{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:.5px solid var(--color-border-tertiary);flex-shrink:0}
+.back{width:30px;height:30px;border-radius:50%;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.tool-ttl{font-size:13px;font-weight:500}
+.tool-bdg{font-size:9px;font-weight:500;padding:2px 9px;border-radius:10px;margin-left:auto;white-space:nowrap}
+
+/* Bottom nav */
+.bnav{display:flex;border-top:.5px solid var(--color-border-tertiary);flex-shrink:0;background:var(--color-background-primary)}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;padding:7px 0 11px;cursor:pointer;font-size:8px;color:var(--color-text-tertiary);gap:2px;transition:color .12s}
+.bn.act{color:var(--color-text-primary)}
+.bn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6}
+
+/* Color tokens */
+.teal-bg{background:#E1F5EE}.teal-txt{color:#085041}.teal-d{color:#1D9E75}
+.purp-bg{background:#EEEDFE}.purp-txt{color:#3C3489}.purp-d{color:#534AB7}
+.pink-bg{background:#FBEAF0}.pink-txt{color:#72243E}.pink-d{color:#993556}
+.amber-bg{background:#FAEEDA}.amber-txt{color:#633806}.amber-d{color:#BA7517}
+.coral-bg{background:#FAECE7}.coral-txt{color:#712B13}
+.blue-bg{background:#E6F1FB}.blue-txt{color:#0C447C}
+@media(prefers-color-scheme:dark){
+  .teal-bg{background:#04342C}.teal-txt{color:#9FE1CB}
+  .purp-bg{background:#26215C}.purp-txt{color:#CECBF6}
+  .pink-bg{background:#4B1528}.pink-txt{color:#F4C0D1}
+  .amber-bg{background:#412402}.amber-txt{color:#FAC775}
+  .coral-bg{background:#4A1B0C}.coral-txt{color:#F5C4B3}
+  .blue-bg{background:#042C53}.blue-txt{color:#B5D4F4}
+}
+
+/* Common feed pieces */
+.sc{flex:1;overflow-y:auto}
+.feed{padding:8px 16px 16px;display:flex;flex-direction:column;gap:8px}
+.fdiv{display:flex;align-items:center;gap:8px}
+.fdl{flex:1;height:.5px;background:var(--color-border-tertiary)}
+.fdlbl{font-size:8px;letter-spacing:.05em;color:var(--color-text-tertiary);text-transform:uppercase;white-space:nowrap}
+.fc{border-radius:12px;border:.5px solid var(--color-border-tertiary);padding:12px 14px;cursor:pointer}
+.fc-tag{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.fc-title{font-size:12px;font-weight:500;margin-bottom:3px;line-height:1.3}
+.fc-sub{font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:6px}
+.fc-action{font-size:11px;font-weight:500;cursor:pointer}
+.alert-c{border-radius:12px;border:.5px solid #E24B4A;background:#FCEBEB;padding:12px 14px;cursor:pointer}
+.a-title{font-size:11px;font-weight:500;color:#791F1F;margin-bottom:5px}
+.a-item{font-size:10px;color:#791F1F;display:flex;justify-content:space-between;padding:2px 0}
+.a-days{color:#E24B4A;font-weight:500}
+.a-btn{font-size:11px;font-weight:500;color:#E24B4A;margin-top:7px;display:block}
+@media(prefers-color-scheme:dark){.alert-c{background:#501313}.a-title,.a-item{color:#F7C1C1}.a-days{color:#F09595}.a-btn{color:#F09595}}
+
+/* ═══ PARENT HOME ═══ */
+.home-sc{flex:1;overflow-y:auto}
+.home-hd{padding:18px 20px 14px}
+.h-eye{font-size:9px;font-weight:500;letter-spacing:.09em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:5px}
+.h-title{font-size:24px;font-weight:500;line-height:1.2;margin-bottom:4px}
+.h-title em{font-family:var(--font-serif);font-style:italic}
+.h-sub{font-size:11px;color:var(--color-text-secondary)}
+.asts{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.ast{border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .12s}
+.ast:active{transform:scale(.97)}
+.ast-hd{padding:16px 20px 14px;position:relative}
+.ast-eye{font-size:8px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;opacity:.7}
+.ast-name{font-size:19px;font-weight:500;line-height:1.2;margin-bottom:4px;color:#fff}
+.ast-name em{font-family:var(--font-serif);font-style:italic}
+.ast-tag{font-size:11px;line-height:1.5;opacity:.8;color:#fff}
+.ast-arr{position:absolute;top:16px;right:16px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
+.ast-feats{padding:9px 20px 12px;display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.12)}
+.ast-feat{font-size:10px;padding:3px 9px;border-radius:10px;background:rgba(255,255,255,.18);white-space:nowrap;font-weight:500;color:#fff}
+.groc .ast-hd{background:#0F6E56}.groc .ast-eye{color:#9FE1CB}.groc .ast-feats{background:#085041}
+.fash .ast-hd{background:#3C3489}.fash .ast-eye{color:#AFA9EC}.fash .ast-feats{background:#26215C}
+.beau .ast-hd{background:#72243E}.beau .ast-eye{color:#ED93B1}.beau .ast-feats{background:#4B1528}
+
+/* ═══ AAPKA BAZAAR ═══ */
+.baz-mast{padding:13px 18px 10px;border-bottom:.5px solid var(--color-border-tertiary);flex-shrink:0}
+.baz-logo{font-size:20px;font-weight:500;margin-bottom:2px}
+.baz-logo span{color:#1D9E75}
+.baz-sub{font-size:10px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px}
+.dot3{width:3px;height:3px;border-radius:50%;background:var(--color-text-tertiary)}
+.tools-w{padding:10px 16px 8px;flex-shrink:0}
+.t-lbl{font-size:8px;font-weight:500;letter-spacing:.07em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:7px}
+.tc-row{display:flex;gap:6px}
+.tc{flex:1;border-radius:12px;padding:10px 9px;cursor:pointer;border:.5px solid transparent;display:flex;flex-direction:column;gap:4px;transition:transform .1s}
+.tc:active{transform:scale(.95)}
+.tc-ico{font-size:14px}
+.tc-nm{font-size:11px;font-weight:500;line-height:1.2}
+.tc-ht{font-size:9px;opacity:.7;line-height:1.3}
+
+/* cart results */
+.plat-stack{display:flex;flex-direction:column;gap:4px;margin:4px 0}
+.plat-r{display:flex;justify-content:space-between;align-items:flex-start;border-radius:8px;padding:7px 10px;border:.5px solid var(--color-border-tertiary)}
+.plat-r.best{background:#E1F5EE;border-color:#5DCAA5}
+.plat-nm{font-size:11px;font-weight:500}
+.plat-it{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
+.plat-pr{font-size:12px;font-weight:500;text-align:right}
+.plat-sv{font-size:9px;color:#1D9E75;font-weight:500}
+.best-bdg{font-size:9px;padding:1px 7px;border-radius:8px;background:#1D9E75;color:white;display:inline-block;margin-bottom:3px}
+@media(prefers-color-scheme:dark){.plat-r.best{background:#04342C;border-color:#1D9E75}}
+
+/* tracker bars */
+.tr-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.tr-item:last-child{border-bottom:none}
+.tr-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.tr-body{flex:1}
+.tr-nm{font-size:11px;font-weight:500;margin-bottom:1px}
+.tr-sub{font-size:10px;color:var(--color-text-secondary)}
+.tr-bar-w{height:4px;background:var(--color-border-tertiary);border-radius:2px;margin-top:4px;overflow:hidden}
+.tr-bar{height:100%;border-radius:2px}
+.tr-days{font-size:10px;font-weight:500;text-align:right;flex-shrink:0}
+
+/* dish ingredients */
+.ing-list{display:flex;flex-direction:column;gap:4px;margin:4px 0}
+.ing-r{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--color-background-secondary);border-radius:8px}
+.ing-nm{font-size:11px;font-weight:500}
+.ing-qty{font-size:10px;color:var(--color-text-secondary)}
+.ing-s{font-size:9px;font-weight:500;padding:2px 7px;border-radius:8px}
+.have{background:#EAF3DE;color:#27500A}.need{background:#FAEEDA;color:#633806}
+@media(prefers-color-scheme:dark){.have{background:#04342C;color:#9FE1CB}.need{background:#412402;color:#FAC775}}
+
+/* action buttons */
+.btn-primary{border-radius:12px;padding:12px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.btn-sec{border:.5px solid var(--color-border-secondary);border-radius:12px;padding:10px;text-align:center;font-size:12px;cursor:pointer;width:100%;color:var(--color-text-primary)}
+
+/* ═══ DRESSING ROOM ═══ */
+.dr-mast{padding:12px 18px 0;flex-shrink:0}
+.dr-eye{font-size:8px;font-weight:500;letter-spacing:.09em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:3px}
+.dr-title{font-family:var(--font-serif);font-size:21px;line-height:1.1;margin-bottom:3px}
+.dr-sub{font-size:10px;color:var(--color-text-secondary);margin-bottom:8px}
+.tab-bar{display:flex;border-bottom:.5px solid var(--color-border-tertiary);flex-shrink:0}
+.tb{flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;border-bottom:2.5px solid transparent;transition:all .15s}
+.tb.act{color:#534AB7;border-bottom-color:#534AB7}
+.occ-row{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 2px;flex-shrink:0}
+.occ-row::-webkit-scrollbar{display:none}
+.occ-c{border-radius:20px;padding:6px 13px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .12s}
+.outfit-card{margin:8px 16px 0;border-radius:14px;overflow:hidden;border:.5px solid var(--color-border-tertiary);cursor:pointer}
+.out-vis{height:100px;display:flex;align-items:center;justify-content:center;position:relative}
+.out-lbl{position:absolute;top:8px;left:10px;font-size:9px;font-weight:500;padding:3px 9px;border-radius:10px}
+.try-btn{position:absolute;bottom:8px;right:10px;font-size:10px;font-weight:500;padding:5px 11px;border-radius:20px;background:var(--color-background-primary);cursor:pointer;border:.5px solid var(--color-border-secondary);color:var(--color-text-primary)}
+.out-body{padding:9px 12px 11px}
+.out-nm{font-family:var(--font-serif);font-size:12px;margin-bottom:2px;line-height:1.3;color:var(--color-text-primary)}
+.out-pieces{font-size:10px;color:var(--color-text-secondary);margin-bottom:4px}
+.out-price{font-size:11px;font-weight:500;color:var(--color-text-primary)}
+
+/* try-on result */
+.tryon-result{border-radius:14px;overflow:hidden;border:.5px solid var(--color-border-tertiary)}
+.tryon-vis{height:190px;display:flex;align-items:center;justify-content:center;position:relative}
+.tryon-bdg{position:absolute;top:10px;left:12px;font-size:9px;font-weight:500;padding:3px 9px;border-radius:10px;background:#EAF3DE;color:#27500A}
+.col-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.col-lbl{font-size:10px;color:var(--color-text-secondary)}
+.cdot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;transition:border-color .12s}
+.cdot.sel{border-color:var(--color-text-primary)}
+@media(prefers-color-scheme:dark){.tryon-bdg{background:#04342C;color:#9FE1CB}}
+
+/* ═══ BEAUTY MAGAZINE ═══ */
+.bm-mast{padding:12px 18px 10px;border-bottom:.5px solid var(--color-border-tertiary);flex-shrink:0}
+.bm-eye{font-size:8px;font-weight:500;letter-spacing:.09em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:2px}
+.bm-title{font-family:var(--font-serif);font-size:20px;line-height:1.1;margin-bottom:3px}
+.bm-sub{font-size:10px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px}
+.bm-tools{padding:10px 16px 8px;flex-shrink:0}
+.bm-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bmt{border-radius:12px;padding:10px 11px;cursor:pointer;border:.5px solid transparent;transition:transform .1s}
+.bmt:active{transform:scale(.95)}
+.bmt-dot{width:6px;height:6px;border-radius:50%;margin-bottom:5px}
+.bmt-nm{font-size:11px;font-weight:500;margin-bottom:1px}
+.bmt-ht{font-size:9px;opacity:.7}
+
+/* ingredient results */
+.ic-stack{display:flex;flex-direction:column;gap:4px;margin:4px 0}
+.ic{display:flex;justify-content:space-between;align-items:center;background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:8px;padding:6px 9px}
+.ic-n{font-size:11px;font-weight:500}
+.ic-d{font-size:10px;color:var(--color-text-secondary)}
+.bdg{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.sb{background:#EAF3DE;color:#27500A}.wb{background:#FAEEDA;color:#633806}
+@media(prefers-color-scheme:dark){.sb{background:#04342C;color:#9FE1CB}.wb{background:#412402;color:#FAC775}}
+
+/* price results */
+.pr-stack{display:flex;flex-direction:column;gap:4px;margin:4px 0}
+.pr-r{display:flex;justify-content:space-between;align-items:center;border-radius:8px;padding:7px 10px;border:.5px solid var(--color-border-tertiary)}
+.pr-r.best-p{border-color:#1D9E75;background:#E1F5EE}
+.pr-nm{font-size:11px;font-weight:500}
+.pr-dl{font-size:9px;color:var(--color-text-secondary)}
+.pr-v{font-size:12px;font-weight:500}
+.pr-bdg{font-size:9px;padding:1px 6px;border-radius:8px;background:#EAF3DE;color:#27500A;margin-left:4px}
+@media(prefers-color-scheme:dark){.pr-r.best-p{background:#04342C}.pr-bdg{background:#04342C;color:#9FE1CB}}
+
+/* routine steps */
+.rs-stack{display:flex;flex-direction:column;gap:4px}
+.rs{display:flex;gap:9px;align-items:flex-start;border-radius:8px;padding:7px 10px;border:.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.rs.conf{border-color:#E24B4A;background:#FCEBEB}
+.rsn{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;margin-top:2px}
+.rs-nm{font-size:11px;font-weight:500}
+.rs-prod{font-size:10px;color:var(--color-text-secondary)}
+@media(prefers-color-scheme:dark){.rs.conf{background:#501313}}
+
+/* beauty feed */
+.bm-hero{border-radius:12px;padding:12px;background:#EEEDFE}
+.bm-hero-tag{font-size:8px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:#534AB7;margin-bottom:3px}
+.bm-hero-ttl{font-family:var(--font-serif);font-size:13px;line-height:1.3;color:#26215C;margin-bottom:3px}
+.bm-hero-sub{font-size:10px;color:#3C3489;line-height:1.5}
+.bm-mini-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bm-mini{border-radius:10px;border:.5px solid var(--color-border-tertiary);padding:9px 10px;cursor:pointer}
+@media(prefers-color-scheme:dark){.bm-hero{background:#26215C}.bm-hero-tag,.bm-hero-ttl,.bm-hero-sub{color:#CECBF6}}
+</style>
+
+<div class="hint">Full Shopping Assistant · tap any assistant · all features work · chat input on every screen</div>
+<div style="display:flex;justify-content:center">
+<div class="phone"><div class="screen">
+<div class="sbar"><span>9:41</span><span style="font-size:12px">●●● 5G ▮▮▮</span></div>
+<div class="pc">
+
+<!-- ═══ PARENT HOME ═══════════════════════════════════════════ -->
+<div class="pg active" id="pg-home">
+  <div class="home-sc">
+    <div class="home-hd">
+      <div class="h-eye">AI Shopping Assistant</div>
+      <div class="h-title">What are you<br>shopping for <em>today?</em></div>
+      <div class="h-sub">Three assistants. One app. Tap to get started.</div>
+    </div>
+    <div class="asts">
+      <div class="ast groc" onclick="go('pg-bazaar')">
+        <div class="ast-hd">
+          <div class="ast-eye" style="color:#9FE1CB">Grocery</div>
+          <div class="ast-name">Aapka <em>Bazaar</em></div>
+          <div class="ast-tag">Smart cart across all apps · tracks what you need · dish to ingredients</div>
+          <div class="ast-arr">→</div>
+        </div>
+        <div class="ast-feats"><div class="ast-feat">Smart Cart</div><div class="ast-feat">Grocery Tracker</div><div class="ast-feat">Dish to Cart</div></div>
+      </div>
+      <div class="ast fash" onclick="go('pg-dressing')">
+        <div class="ast-hd">
+          <div class="ast-eye" style="color:#AFA9EC">Fashion</div>
+          <div class="ast-name">The <em>Dressing Room</em></div>
+          <div class="ast-tag">Outfit ideas by occasion · virtual try-on · shop from AJIO</div>
+          <div class="ast-arr">→</div>
+        </div>
+        <div class="ast-feats"><div class="ast-feat">Outfit Builder</div><div class="ast-feat">Virtual Try-On</div></div>
+      </div>
+      <div class="ast beau" onclick="go('pg-beauty')">
+        <div class="ast-hd">
+          <div class="ast-eye" style="color:#ED93B1">Beauty</div>
+          <div class="ast-name">Your <em>Beauty Magazine</em></div>
+          <div class="ast-tag">Ingredient checker · price compare · routine builder · beauty guide</div>
+          <div class="ast-arr">→</div>
+        </div>
+        <div class="ast-feats"><div class="ast-feat">Ingredient Stories</div><div class="ast-feat">Price Watch</div><div class="ast-feat">Routine Edit</div><div class="ast-feat">The Guide</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-bar">
+    <div class="mic-b">🎙</div>
+    <div class="chat-box"><span class="chat-txt">Ask anything across all assistants...</span></div>
+    <div class="send-b">↑</div>
+  </div>
+  <div class="bnav">
+    <div class="bn act"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v10h5v-6h4v6h5V10"/></svg>Home</div>
+    <div class="bn" onclick="go('pg-bazaar')"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Grocery</div>
+    <div class="bn" onclick="go('pg-dressing')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Fashion</div>
+    <div class="bn" onclick="go('pg-beauty')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Beauty</div>
+  </div>
+</div>
+
+<!-- ═══ AAPKA BAZAAR HOME ════════════════════════════════════ -->
+<div class="pg" id="pg-bazaar">
+  <div class="baz-mast">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">
+      <div class="back" onclick="back()">←</div>
+      <div class="baz-logo">Aapka<span> Bazaar</span></div>
+    </div>
+    <div class="baz-sub"><span>Mumbai</span><div class="dot3"></div><span>Monsoon</span><div class="dot3"></div><span>JioMart-first</span></div>
+  </div>
+  <div class="tools-w">
+    <div class="t-lbl">Your tools</div>
+    <div class="tc-row">
+      <div class="tc teal-bg" onclick="go('pg-cart')"><div class="tc-ico">🛒</div><div class="tc-nm teal-txt">Smart Cart</div><div class="tc-ht teal-txt">Type, speak or snap</div></div>
+      <div class="tc purp-bg" onclick="go('pg-tracker')"><div class="tc-ico">📊</div><div class="tc-nm purp-txt">Tracker</div><div class="tc-ht purp-txt">Items running low</div></div>
+      <div class="tc amber-bg" onclick="go('pg-dish')"><div class="tc-ico">🍳</div><div class="tc-nm amber-txt">Dish to Cart</div><div class="tc-ht amber-txt">Photo a dish</div></div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="feed">
+      <div class="fdiv"><div class="fdl"></div><div class="fdlbl">Your cart</div><div class="fdl"></div></div>
+      <div class="fc" onclick="go('pg-cart-result')"><div class="fc-tag teal-d">Smart Cart · Last built Tuesday</div><div class="fc-title">18 items · Split across JioMart + Zepto</div><div class="fc-sub">Saved Rs 187 vs buying everything on one app.</div><div class="fc-action teal-d">Reorder this cart →</div></div>
+      <div class="fdiv"><div class="fdl"></div><div class="fdlbl">Running low</div><div class="fdl"></div></div>
+      <div class="alert-c" onclick="go('pg-tracker')"><div class="a-title">⚠ 3 items need restocking soon</div><div class="a-item"><span>Amul Doodh 1L</span><span class="a-days">~2 days left</span></div><div class="a-item"><span>Aashirvaad Atta 5kg</span><span class="a-days">~4 days left</span></div><div class="a-item"><span>Tata Salt 1kg</span><span class="a-days">~5 days left</span></div><div class="a-btn">Add all to cart →</div></div>
+      <div class="fdiv"><div class="fdl"></div><div class="fdlbl">Dish idea</div><div class="fdl"></div></div>
+      <div class="fc amber-bg" style="border-color:#FAC775" onclick="go('pg-dish')"><div class="fc-tag amber-d">Monsoon special</div><div class="fc-title" style="color:#2C2C2A">Masala Chai + Pakoras</div><div class="fc-sub amber-txt">3 ingredients to order. Rest you have at home.</div><div class="fc-action amber-d">Get ingredients →</div></div>
+    </div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Type your grocery list in any language...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+</div>
+
+<!-- ═══ SMART CART ════════════════════════════════════════════ -->
+<div class="pg" id="pg-cart">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Smart Cart Builder</div><div class="tool-bdg teal-bg teal-txt">JioMart-first</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Apni list share karo — type karo, bol ke batao, ya photo khicho. Hindi, English, kuch bhi chalega.</div>
+    <div class="bme">2 kilo aloo, Amul doodh 2 litre, Aashirvaad atta 5kg, Maggi 12 pack, daal, sarson ka tel</div>
+    <div class="bai">6 items parsed. <strong>1 clarification:</strong> Daal — konsi? Maine toor dal li hai by default.<br><br>Best split:
+      <div class="plat-stack">
+        <div class="plat-r best"><div><div class="best-bdg">JioMart · 4 items</div><div class="plat-it">Atta, sarson tel, toor dal, namak</div></div><div style="text-align:right"><div class="plat-pr">₹892</div><div class="plat-sv">Default platform</div></div></div>
+        <div class="plat-r"><div><div class="plat-nm">Zepto · 2 items</div><div class="plat-it">Amul doodh, aloo 2kg</div></div><div style="text-align:right"><div class="plat-pr">₹287</div><div class="plat-sv" style="color:#1D9E75">Saves Rs 94</div></div></div>
+        <div class="plat-r"><div><div class="plat-nm">Blinkit · 1 item</div><div class="plat-it">Maggi 12pk</div></div><div style="text-align:right"><div class="plat-pr">₹198</div><div class="plat-sv" style="color:#1D9E75">Saves Rs 42</div></div></div>
+      </div>
+      Total: <strong>Rs 1,377</strong> · saves Rs 136 vs all-JioMart.
+    </div>
+    <div style="align-self:stretch;display:flex;flex-direction:column;gap:7px">
+      <div class="btn-primary" style="background:#1D9E75;color:white">Place all 3 orders →</div>
+      <div class="btn-sec">Keep everything on JioMart</div>
+    </div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Edit your list or ask about items...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+</div>
+
+<!-- ═══ CART RESULT (from feed) ══════════════════════════════ -->
+<div class="pg" id="pg-cart-result">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Your last cart</div><div class="tool-bdg" style="background:#E1F5EE;color:#085041">Saved Rs 187</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Your Tuesday cart — 18 items across JioMart + Zepto. Want to reorder the same?
+      <div class="plat-stack" style="margin-top:8px">
+        <div class="plat-r best"><div><div class="best-bdg">JioMart · 12 items</div><div class="plat-it">Atta, dal, oil, sabun, namak + 7 more</div></div><div style="text-align:right"><div class="plat-pr">₹1,240</div></div></div>
+        <div class="plat-r"><div><div class="plat-nm">Zepto · 6 items</div><div class="plat-it">Doodh, aloo, tamatar, Maggi + 2 more</div></div><div style="text-align:right"><div class="plat-pr">₹683</div><div class="plat-sv" style="color:#1D9E75">Saves Rs 187</div></div></div>
+      </div>
+    </div>
+    <div style="align-self:stretch;display:flex;flex-direction:column;gap:7px">
+      <div class="btn-primary" style="background:#1D9E75;color:white">Reorder same cart →</div>
+      <div class="btn-sec">Edit before ordering</div>
+    </div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Make changes to this cart...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+</div>
+
+<!-- ═══ GROCERY TRACKER ══════════════════════════════════════ -->
+<div class="pg" id="pg-tracker">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Grocery Tracker</div><div class="tool-bdg purp-bg purp-txt">12 items tracked</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Based on your order history, here's what's running low. I'll alert you 2–3 days before each runs out.</div>
+    <div style="align-self:stretch">
+      <div style="font-size:10px;font-weight:500;color:#E24B4A;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">⚠ Restock soon</div>
+      <div style="border-radius:10px;border:.5px solid var(--color-border-tertiary);padding:8px 12px;background:var(--color-background-primary)">
+        <div class="tr-item"><div class="tr-ico amber-bg">🥛</div><div class="tr-body"><div class="tr-nm">Amul Doodh 1L</div><div class="tr-sub">1L every 2.5 days · Day 8</div><div class="tr-bar-w"><div class="tr-bar" style="width:15%;background:#E24B4A"></div></div></div><div class="tr-days" style="color:#E24B4A">~2 days</div></div>
+        <div class="tr-item"><div class="tr-ico teal-bg">🌾</div><div class="tr-body"><div class="tr-nm">Aashirvaad Atta 5kg</div><div class="tr-sub">5kg every 22 days · Day 18</div><div class="tr-bar-w"><div class="tr-bar" style="width:22%;background:#EF9F27"></div></div></div><div class="tr-days" style="color:#EF9F27">~4 days</div></div>
+        <div class="tr-item" style="border-bottom:none"><div class="tr-ico teal-bg">🧂</div><div class="tr-body"><div class="tr-nm">Tata Salt 1kg</div><div class="tr-sub">1kg every 30 days · Day 25</div><div class="tr-bar-w"><div class="tr-bar" style="width:30%;background:#EF9F27"></div></div></div><div class="tr-days" style="color:#EF9F27">~5 days</div></div>
+      </div>
+    </div>
+    <div style="align-self:stretch">
+      <div style="font-size:10px;font-weight:500;color:#1D9E75;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">✓ Well stocked</div>
+      <div style="border-radius:10px;border:.5px solid var(--color-border-tertiary);padding:8px 12px;background:var(--color-background-primary)">
+        <div class="tr-item"><div class="tr-ico amber-bg">🛢</div><div class="tr-body"><div class="tr-nm">Sunflower Oil 1L</div><div class="tr-sub">~11 days remaining</div><div class="tr-bar-w"><div class="tr-bar" style="width:55%;background:#1D9E75"></div></div></div><div class="tr-days" style="color:var(--color-text-tertiary)">11 days</div></div>
+        <div class="tr-item" style="border-bottom:none"><div class="tr-ico teal-bg">🫙</div><div class="tr-body"><div class="tr-nm">Tata Sampann Dal 500g</div><div class="tr-sub">~14 days remaining</div><div class="tr-bar-w"><div class="tr-bar" style="width:70%;background:#1D9E75"></div></div></div><div class="tr-days" style="color:var(--color-text-tertiary)">14 days</div></div>
+      </div>
+    </div>
+    <div class="btn-primary" style="background:#1D9E75;color:white;align-self:stretch" onclick="go('pg-cart')">Add low items to Smart Cart →</div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask about your pantry...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+</div>
+
+<!-- ═══ DISH TO CART ══════════════════════════════════════════ -->
+<div class="pg" id="pg-dish">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Dish to Cart</div><div class="tool-bdg amber-bg amber-txt">Type or photo</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Koi bhi dish ka naam batao ya photo khicho — main ingredients nikalunga aur jo ghar mein nahi hai wohi cart mein daal dunga.</div>
+    <div style="align-self:stretch;border-radius:12px;border:1.5px dashed var(--color-border-secondary);padding:14px;text-align:center;cursor:pointer;background:var(--color-background-secondary)" onclick="go('pg-dish-result')">
+      <div style="font-size:22px;margin-bottom:6px">📷</div>
+      <div style="font-size:12px;font-weight:500;margin-bottom:3px">Photo khincho dish ki</div>
+      <div style="font-size:10px;color:var(--color-text-secondary)">Ya naam type karo neeche</div>
+    </div>
+    <div class="bme">Chole Bhature for 4 log</div>
+    <div class="bai">Chole Bhature ke liye 8 ingredients chahiye. <strong>5 aapke paas already hain</strong> — sirf <strong>3 order karne honge.</strong>
+      <div class="ing-list">
+        <div class="ing-r"><div><div class="ing-nm">Kabuli chana</div><div class="ing-qty">400g</div></div><div class="ing-s need">Order karo</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Maida</div><div class="ing-qty">400g</div></div><div class="ing-s need">Order karo</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Chole masala</div><div class="ing-qty">2 tbsp</div></div><div class="ing-s need">Order karo</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Onion, tomato, oil</div><div class="ing-qty">as needed</div></div><div class="ing-s have">Ghar mein hai ✓</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Ginger-garlic, dahi</div><div class="ing-qty">as needed</div></div><div class="ing-s have">Ghar mein hai ✓</div></div>
+      </div>
+    </div>
+    <div style="align-self:stretch;display:flex;flex-direction:column;gap:7px" onclick="go('pg-cart')">
+      <div class="btn-primary" style="background:#BA7517;color:white">Smart Cart mein add karo →</div>
+    </div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Koi bhi dish ka naam...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
+</div>
+
+<!-- Dish result shortcut -->
+<div class="pg" id="pg-dish-result">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Dish identified</div><div class="tool-bdg amber-bg amber-txt">8 ingredients</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Dish detected: <strong>Masala Chai + Pakoras</strong> (Monsoon special). 9 ingredients — you have 6, need 3.
+      <div class="ing-list">
+        <div class="ing-r"><div><div class="ing-nm">Besan</div><div class="ing-qty">200g</div></div><div class="ing-s need">Order karo</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Adrak (ginger)</div><div class="ing-qty">50g</div></div><div class="ing-s need">Order karo</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Chai patti</div><div class="ing-qty">100g</div></div><div class="ing-s need">Order karo</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Pyaaz, mirchi, oil</div><div class="ing-qty">as needed</div></div><div class="ing-s have">Ghar mein hai ✓</div></div>
+        <div class="ing-r"><div><div class="ing-nm">Doodh, cheeni, elaichi</div><div class="ing-qty">as needed</div></div><div class="ing-s have">Ghar mein hai ✓</div></div>
+      </div>
+      Total approx Rs 65.
+    </div>
+    <div class="btn-primary" style="background:#BA7517;color:white;align-self:stretch" onclick="go('pg-cart')">Smart Cart mein add karo →</div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Koi aur dish add karo...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
+</div>
+
+<!-- ═══ THE DRESSING ROOM ════════════════════════════════════ -->
+<div class="pg" id="pg-dressing">
+  <div class="dr-mast">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div class="back" onclick="back()">←</div>
+      <div><div class="dr-eye">The dressing room</div><div class="dr-title">Step in, try it on.</div></div>
+    </div>
+    <div class="dr-sub">Fusion · Regular frame · Wedding, Office, Casual</div>
+  </div>
+  <div class="tab-bar">
+    <div class="tb act" id="dr-tb1" onclick="drTab(1)">Outfit Builder</div>
+    <div class="tb" id="dr-tb2" onclick="drTab(2)">Virtual Try-On</div>
+  </div>
+
+  <!-- Outfit Builder tab -->
+  <div id="dr-t1" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div class="occ-row">
+      <div class="occ-c amber-bg" id="occ-sangeet" onclick="filterOcc('sangeet',this)">Sangeet</div>
+      <div class="occ-c" id="occ-office" onclick="filterOcc('office',this)" style="background:var(--color-background-secondary)">Office</div>
+      <div class="occ-c" id="occ-casual" onclick="filterOcc('casual',this)" style="background:var(--color-background-secondary)">Casual</div>
+      <div class="occ-c" id="occ-date" onclick="filterOcc('date',this)" style="background:var(--color-background-secondary)">Date night</div>
+      <div class="occ-c purp-bg" id="occ-navratri" onclick="filterOcc('navratri',this)">Navratri</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:4px">
+      <div id="occ-sangeet-cards">
+        <div class="outfit-card" onclick="selectOutfit('#EF9F27','Sangeet Fusion')"><div class="out-vis" style="background:#FAEEDA"><div class="out-lbl" style="background:#FAC775;color:#412402">Sangeet · Fusion</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><ellipse cx="22" cy="10" rx="8" ry="9" fill="#BA7517" opacity=".3"/><path d="M8 26C8 20 14 18 22 18s14 2 14 8l4 36H2L8 26z" fill="#EF9F27" opacity=".5"/><path d="M8 34h28" stroke="#BA7517" stroke-width="1" opacity=".3" stroke-dasharray="3 3"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#EF9F27','Sangeet Fusion')">Try on →</div></div><div class="out-body"><div class="out-nm">Sangeet Fusion · Ethnic coordinates</div><div class="out-pieces">Silk kurta · Palazzo · Dupatta · Block heels</div><div class="out-price">₹2,800 – ₹4,200 · AJIO</div></div></div>
+        <div class="outfit-card" onclick="selectOutfit('#D4537E','Festive Sharara')"><div class="out-vis" style="background:#FBEAF0"><div class="out-lbl" style="background:#F4C0D1;color:#4B1528">Sangeet · Festive</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><ellipse cx="22" cy="10" rx="8" ry="9" fill="#993556" opacity=".25"/><path d="M12 22C12 18 16 16 22 16s10 2 10 6l6 42H6L12 22z" fill="#D4537E" opacity=".4"/><circle cx="22" cy="30" r="3" fill="#D4537E" opacity=".5"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#D4537E','Festive Sharara')">Try on →</div></div><div class="out-body"><div class="out-nm">Festive Sharara · Glam ethnic</div><div class="out-pieces">Embellished blouse · Sharara · Dupatta · Mojris</div><div class="out-price">₹3,500 – ₹5,800 · AJIO</div></div></div>
+      </div>
+      <div id="occ-office-cards" style="display:none">
+        <div class="outfit-card" onclick="selectOutfit('#378ADD','Office Chic')"><div class="out-vis" style="background:#E6F1FB"><div class="out-lbl" style="background:#B5D4F4;color:#042C53">Office · Formal</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><rect x="12" y="4" width="20" height="26" rx="4" fill="#378ADD" opacity=".3"/><rect x="14" y="30" width="16" height="30" fill="#185FA5" opacity=".3"/><line x1="22" y1="4" x2="22" y2="30" stroke="#378ADD" stroke-width="2" opacity=".4"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#378ADD','Office Chic')">Try on →</div></div><div class="out-body"><div class="out-nm">Office Chic · Power dressing</div><div class="out-pieces">Blazer · Straight trousers · Silk blouse · Heels</div><div class="out-price">₹3,200 – ₹5,500 · AJIO</div></div></div>
+        <div class="outfit-card" onclick="selectOutfit('#639922','Smart Casual')"><div class="out-vis" style="background:#EAF3DE"><div class="out-lbl" style="background:#C0DD97;color:#173404">Office · Smart casual</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><ellipse cx="22" cy="18" rx="12" ry="14" fill="#639922" opacity=".25"/><rect x="14" y="32" width="16" height="28" rx="2" fill="#3B6D11" opacity=".25"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#639922','Smart Casual')">Try on →</div></div><div class="out-body"><div class="out-nm">Smart Casual · Fusion workwear</div><div class="out-pieces">Linen kurta · Wide-leg pants · Loafers</div><div class="out-price">₹1,800 – ₹3,200 · AJIO</div></div></div>
+      </div>
+      <div id="occ-casual-cards" style="display:none">
+        <div class="outfit-card" onclick="selectOutfit('#1D9E75','Weekend Edit')"><div class="out-vis" style="background:#E1F5EE"><div class="out-lbl" style="background:#9FE1CB;color:#04342C">Casual · Weekend</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><ellipse cx="22" cy="12" rx="10" ry="10" fill="#1D9E75" opacity=".2"/><path d="M10 26h24l-4 36H14L10 26z" fill="#1D9E75" opacity=".25"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#1D9E75','Weekend Edit')">Try on →</div></div><div class="out-body"><div class="out-nm">Weekend Edit · Relaxed fusion</div><div class="out-pieces">Linen shirt · Straight jeans · Kolhapuri flats</div><div class="out-price">₹1,400 – ₹2,600 · AJIO</div></div></div>
+      </div>
+      <div id="occ-date-cards" style="display:none">
+        <div class="outfit-card" onclick="selectOutfit('#D4537E','Date Night')"><div class="out-vis" style="background:#FBEAF0"><div class="out-lbl" style="background:#F4C0D1;color:#4B1528">Date · Romantic</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><path d="M12 20C12 16 16 12 22 12s10 4 10 8l4 44H8L12 20z" fill="#D4537E" opacity=".3"/><path d="M16 24q6-4 12 0" stroke="#993556" stroke-width="1.5" opacity=".5" fill="none"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#D4537E','Date Night')">Try on →</div></div><div class="out-body"><div class="out-nm">Date Night · Soft romantic</div><div class="out-pieces">Floral wrap dress · Strappy heels · Clutch</div><div class="out-price">₹2,200 – ₹3,800 · AJIO</div></div></div>
+      </div>
+      <div id="occ-navratri-cards" style="display:none">
+        <div class="outfit-card" onclick="selectOutfit('#7F77DD','Navratri Edit')"><div class="out-vis" style="background:#EEEDFE"><div class="out-lbl" style="background:#CECBF6;color:#26215C">Navratri · Garba</div><svg viewBox="0 0 44 64" width="44" height="64" fill="none"><circle cx="22" cy="12" r="10" fill="#7F77DD" opacity=".25"/><path d="M6 30c0-8 6-14 16-14s16 6 16 14l-4 30H10L6 30z" fill="#534AB7" opacity=".3"/><path d="M6 38h32M10 46h24" stroke="#534AB7" stroke-width="1" opacity=".3" fill="none"/></svg><div class="try-btn" onclick="event.stopPropagation();selectAndTryon('#7F77DD','Navratri Edit')">Try on →</div></div><div class="out-body"><div class="out-nm">Navratri Edit · Garba-ready chaniya</div><div class="out-pieces">Chaniya · Choli · Dupatta · Juttis</div><div class="out-price">₹2,400 – ₹4,800 · AJIO</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Virtual Try-On tab -->
+  <div id="dr-t2" style="flex:1;overflow-y:auto;display:none">
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+      <!-- Selected look -->
+      <div id="dr-no-look" style="border-radius:12px;border:.5px dashed var(--color-border-secondary);padding:14px;text-align:center;background:var(--color-background-secondary)">
+        <div style="font-size:13px;font-weight:500;margin-bottom:4px">No outfit selected</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.5">Pick a look from Outfit Builder, then tap "Try on →"</div>
+      </div>
+      <div id="dr-has-look" style="display:none;background:var(--color-background-secondary);border-radius:12px;padding:10px 12px;align-items:center;gap:10px">
+        <div id="look-swatch" style="width:36px;height:36px;border-radius:8px;flex-shrink:0;background:#EF9F27"></div>
+        <div style="flex:1"><div id="look-name" style="font-size:12px;font-weight:500">Sangeet Fusion</div><div style="font-size:10px;color:var(--color-text-secondary)">Selected from Outfit Builder</div></div>
+        <div style="font-size:10px;color:#534AB7;cursor:pointer" onclick="drTab(1)">Change →</div>
+      </div>
+      <!-- Upload -->
+      <div id="dr-upload">
+        <div style="border:1.5px dashed var(--color-border-secondary);border-radius:14px;padding:18px 16px;text-align:center;cursor:pointer;background:var(--color-background-secondary)" onclick="doTryon()">
+          <div style="font-size:22px;margin-bottom:7px">📷</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Upload your photo</div>
+          <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:14px">One full-body photo. AI overlays your selected outfit.</div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1;border:.5px solid var(--color-border-secondary);border-radius:10px;padding:9px;font-size:11px;text-align:center;cursor:pointer">📷 Camera</div>
+            <div style="flex:1;background:#534AB7;color:white;border-radius:10px;padding:9px;font-size:11px;text-align:center;cursor:pointer;font-weight:500">Upload</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--color-text-tertiary);text-align:center;margin-top:8px">Your photo stays on your device. Never stored.</div>
+      </div>
+      <!-- Result -->
+      <div id="dr-result" style="display:none">
+        <div class="tryon-result">
+          <div class="tryon-vis" id="tryon-vis" style="background:#FAEEDA22">
+            <div class="tryon-bdg">AI try-on · Fusion fit</div>
+            <svg viewBox="0 0 120 200" width="120" height="200" fill="none">
+              <ellipse cx="60" cy="30" rx="20" ry="22" fill="var(--color-text-secondary)" opacity=".15"/>
+              <path id="outfit-overlay" d="M30 70C30 58 42 52 60 52s30 6 30 18l12 100H18L30 70z" fill="#EF9F27" opacity=".55"/>
+              <path d="M36 82q24-8 48 0" stroke="#BA7517" stroke-width="1.5" opacity=".4" fill="none"/>
+              <path d="M33 100q27-6 54 0" stroke="#BA7517" stroke-width="1" opacity=".3" fill="none" stroke-dasharray="4 4"/>
+              <path d="M50 52q10-8 20 0" stroke="var(--color-text-secondary)" stroke-width="1.5" opacity=".3" fill="none"/>
+              <path d="M30 68L18 100" stroke="var(--color-text-secondary)" stroke-width="8" stroke-linecap="round" opacity=".12"/>
+              <path d="M90 68L102 100" stroke="var(--color-text-secondary)" stroke-width="8" stroke-linecap="round" opacity=".12"/>
+              <ellipse cx="48" cy="184" rx="10" ry="6" fill="var(--color-text-secondary)" opacity=".15"/>
+              <ellipse cx="72" cy="184" rx="10" ry="6" fill="var(--color-text-secondary)" opacity=".15"/>
+            </svg>
+          </div>
+          <div style="padding:12px">
+            <div style="font-size:11px;font-weight:500;margin-bottom:8px">Colour variants</div>
+            <div class="col-row">
+              <div class="cdot sel" id="c1" style="background:#EF9F27" onclick="chgColor('#EF9F27','#EF9F27')"></div>
+              <div class="cdot" id="c2" style="background:#D4537E" onclick="chgColor('#D4537E','#D4537E')"></div>
+              <div class="cdot" id="c3" style="background:#534AB7" onclick="chgColor('#534AB7','#534AB7')"></div>
+              <div class="cdot" id="c4" style="background:#1D9E75" onclick="chgColor('#1D9E75','#1D9E75')"></div>
+            </div>
+            <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:12px;line-height:1.5">Recommended size: <strong>M</strong> based on your profile. This silhouette suits your regular frame.</div>
+            <div class="btn-primary" style="background:#534AB7;color:white">Shop this look on AJIO →</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:8px"><span style="font-size:11px;color:var(--color-text-secondary);cursor:pointer" onclick="resetTryon()">Try a different look →</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Describe your occasion or style...</span></div><div class="send-b" style="background:#534AB7">↑</div></div>
+</div>
+
+<!-- ═══ BEAUTY MAGAZINE HOME ════════════════════════════════ -->
+<div class="pg" id="pg-beauty">
+  <div class="bm-mast">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px">
+      <div class="back" onclick="back()">←</div>
+      <div><div class="bm-eye">Your beauty magazine · July 2026</div><div class="bm-title">Your Skin, Your Edition.</div></div>
+    </div>
+    <div class="bm-sub"><span>Oily · acne-prone</span><div class="dot3"></div><span>Mumbai</span><div class="dot3"></div><span>Monsoon routine</span></div>
+  </div>
+  <div class="bm-tools">
+    <div class="t-lbl">Your tools</div>
+    <div class="bm-grid">
+      <div class="bmt pink-bg" onclick="go('pg-ingr')"><div class="bmt-dot" style="background:#993556"></div><div class="bmt-nm pink-txt">Ingredient Stories</div><div class="bmt-ht pink-txt">Check any product</div></div>
+      <div class="bmt amber-bg" onclick="go('pg-price')"><div class="bmt-dot" style="background:#BA7517"></div><div class="bmt-nm amber-txt">Price Watch</div><div class="bmt-ht amber-txt">Compare all platforms</div></div>
+      <div class="bmt teal-bg" onclick="go('pg-routine')"><div class="bmt-dot" style="background:#1D9E75"></div><div class="bmt-nm teal-txt">Routine Edit</div><div class="bmt-ht teal-txt">AM + PM skincare</div></div>
+      <div class="bmt coral-bg" onclick="go('pg-guide')"><div class="bmt-dot" style="background:#993C1D"></div><div class="bmt-nm coral-txt">The Guide</div><div class="bmt-ht coral-txt">Ask anything</div></div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="feed">
+      <div class="fdiv"><div class="fdl"></div><div class="fdlbl">This week's edition</div><div class="fdl"></div></div>
+      <div class="bm-hero" onclick="go('pg-guide')"><div class="bm-hero-tag">Ingredient spotlight · Monsoon</div><div class="bm-hero-ttl">Why niacinamide is the only active your oily skin needs this July</div><div class="bm-hero-sub">In humid cities, less is more. One serum, visible results in 4 weeks.</div></div>
+      <div class="bm-mini-row">
+        <div class="bm-mini" onclick="go('pg-guide')"><div style="font-size:9px;font-weight:500;color:#1D9E75;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em">The Guide</div><div style="font-size:12px;font-weight:500;line-height:1.3">What is skin cycling?</div></div>
+        <div class="bm-mini" onclick="go('pg-price')"><div style="font-size:9px;font-weight:500;color:#993C1D;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em">Price Watch</div><div style="font-size:12px;font-weight:500;line-height:1.3">Best SPF under ₹500</div></div>
+      </div>
+      <div style="border-radius:10px;border:.5px solid #E24B4A;background:#FCEBEB;padding:10px 12px;cursor:pointer" onclick="go('pg-routine')">
+        <div style="font-size:11px;font-weight:500;color:#791F1F;margin-bottom:2px">⚠ Routine conflict detected</div>
+        <div style="font-size:10px;color:#A32D2D;line-height:1.4">AM routine has 1 conflict. Tap to fix.</div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask about beauty, skincare, ingredients...</span></div><div class="send-b" style="background:#993556">↑</div></div>
+</div>
+
+<!-- ═══ INGREDIENT STORIES ═══════════════════════════════════ -->
+<div class="pg" id="pg-ingr">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Ingredient Stories</div><div class="tool-bdg pink-bg pink-txt">Scan any product</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Type or scan any product name — I'll decode every ingredient for your oily, acne-prone skin and flag conflicts with your current routine.</div>
+    <div class="bme">Minimalist Niacinamide 10% + Zinc serum</div>
+    <div class="bai">Found it. Full breakdown for your skin:
+      <div class="ic-stack">
+        <div class="ic"><div><div class="ic-n">Niacinamide 10%</div><div class="ic-d">Controls oil, reduces pores, fades spots</div></div><div class="bdg sb">Great for you</div></div>
+        <div class="ic"><div><div class="ic-n">Zinc PCA</div><div class="ic-d">Anti-bacterial, balances sebum</div></div><div class="bdg sb">Great for you</div></div>
+        <div class="ic"><div><div class="ic-n">Dimethicone</div><div class="ic-d">Silicone — use sparingly on oily skin</div></div><div class="bdg wb">Caution</div></div>
+      </div>
+    </div>
+    <div class="bai" style="border-left:3px solid #E24B4A;border-radius:4px 14px 14px 14px"><span style="color:#E24B4A;font-weight:500">⚠ Conflict detected</span><br>Your AHA toner (AM Step 3) reduces niacinamide effectiveness. Move AHA to your PM routine — niacinamide stays in AM.</div>
+    <div style="display:flex;gap:6px;align-self:flex-start">
+      <div style="border:.5px solid var(--color-border-secondary);border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;background:var(--color-background-secondary)" onclick="go('pg-routine')">Fix in Routine Edit →</div>
+      <div style="border:.5px solid var(--color-border-secondary);border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;background:var(--color-background-secondary)" onclick="go('pg-price')">Check price →</div>
+    </div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Check another product...</span></div><div class="send-b" style="background:#993556">↑</div></div>
+</div>
+
+<!-- ═══ PRICE WATCH ═══════════════════════════════════════════ -->
+<div class="pg" id="pg-price">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Price Watch</div><div class="tool-bdg amber-bg amber-txt">Live prices</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Name any beauty product — I'll compare live prices across Nykaa, Tira, Purplle, Amazon, Blinkit, and Zepto.</div>
+    <div class="bme">Minimalist Niacinamide 10% + Zinc 30ml</div>
+    <div class="bai">Live prices right now:
+      <div class="pr-stack">
+        <div class="pr-r best-p"><div><div class="pr-nm">Zepto</div><div class="pr-dl">12 min · Authentic seller</div></div><div style="display:flex;align-items:center"><div class="pr-v">₹399</div><div class="pr-bdg">Best deal</div></div></div>
+        <div class="pr-r"><div><div class="pr-nm">Amazon</div><div class="pr-dl">Prime · Next day</div></div><div class="pr-v">₹419</div></div>
+        <div class="pr-r"><div><div class="pr-nm">Purplle</div><div class="pr-dl">2–3 days</div></div><div class="pr-v">₹429</div></div>
+        <div class="pr-r"><div><div class="pr-nm">Nykaa</div><div class="pr-dl">Verified brand store</div></div><div class="pr-v">₹449</div></div>
+        <div class="pr-r"><div><div class="pr-nm">Blinkit</div><div class="pr-dl">20 min delivery</div></div><div class="pr-v">₹449</div></div>
+        <div class="pr-r"><div><div class="pr-nm">Tira</div><div class="pr-dl">2–4 days</div></div><div class="pr-v">₹459</div></div>
+      </div>
+      Zepto saves Rs 50 vs Nykaa. Want me to set a price alert below Rs 380?
+    </div>
+    <div class="bme">Yes, set price alert</div>
+    <div class="bai">Done — you'll be notified when this drops below Rs 380 on any platform.</div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Search any beauty product...</span></div><div class="send-b" style="background:#BA7517">↑</div></div>
+</div>
+
+<!-- ═══ ROUTINE EDIT ══════════════════════════════════════════ -->
+<div class="pg" id="pg-routine">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">Routine Edit</div><div class="tool-bdg" style="background:#FCEBEB;color:#E24B4A">1 conflict</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Your AM routine for oily, acne-prone skin in Mumbai. I found 1 conflict — it's been quietly reducing your results.</div>
+    <div style="align-self:stretch">
+      <div style="font-size:10px;font-weight:500;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">AM Routine</div>
+      <div class="rs-stack">
+        <div class="rs"><div class="rsn" style="background:#EAF3DE;color:#27500A">1</div><div><div class="rs-nm">Cleanser</div><div class="rs-prod">CeraVe Foaming Facial Cleanser</div></div></div>
+        <div class="rs conf"><div class="rsn" style="background:#E24B4A;color:white">!</div><div><div class="rs-nm" style="color:#791F1F">Vitamin C serum ← conflict</div><div class="rs-prod" style="color:#A32D2D">Conflicts with Step 3 AHA toner</div></div></div>
+        <div class="rs"><div class="rsn" style="background:#FAEEDA;color:#633806">3</div><div><div class="rs-nm">AHA + BHA Toner</div><div class="rs-prod">Cosrx AHA/BHA Clarifying Treatment</div></div></div>
+        <div class="rs"><div class="rsn" style="background:#EAF3DE;color:#27500A">4</div><div><div class="rs-nm">Moisturiser</div><div class="rs-prod">Neutrogena Hydro Boost Gel</div></div></div>
+        <div class="rs"><div class="rsn" style="background:#EAF3DE;color:#27500A">5</div><div><div class="rs-nm">SPF 50 PA++++</div><div class="rs-prod">Re'equil Oxybenzone-free Sunscreen</div></div></div>
+      </div>
+    </div>
+    <div class="bai" style="border-left:3px solid #E24B4A;border-radius:4px 14px 14px 14px"><span style="color:#E24B4A;font-weight:500">The fix:</span> Move AHA to PM. Vitamin C stays in AM — it works far better without the AHA interference.</div>
+    <div class="bme">Fix my routine</div>
+    <div class="bai">Updated. AHA moved to your PM routine. AM stack is now clean — no conflicts.</div>
+    <div class="btn-primary" style="background:#1D9E75;color:white;align-self:stretch">Routine updated ✓</div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask about your routine...</span></div><div class="send-b" style="background:#1D9E75">↑</div></div>
+</div>
+
+<!-- ═══ THE GUIDE ════════════════════════════════════════════ -->
+<div class="pg" id="pg-guide">
+  <div class="tool-hd"><div class="back" onclick="back()">←</div><div class="tool-ttl">The Guide</div><div class="tool-bdg coral-bg coral-txt">Ask anything</div></div>
+  <div class="chat-scroll">
+    <div class="bai">Ask me anything about skincare, ingredients, or your routine. Straight answers for oily, acne-prone skin in Mumbai. Hindi ya English — kuch bhi.</div>
+    <div class="bme">What is skin cycling and should I try it?</div>
+    <div class="bai">Skin cycling is a 4-night routine:<br><br><strong>Night 1</strong> — Exfoliate (AHA/BHA)<br><strong>Night 2</strong> — Retinol<br><strong>Nights 3 &amp; 4</strong> — Recovery (just moisturiser)<br><br>For your oily, acne-prone skin in Mumbai — yes. You already use AHA. Adding retinol on alternate nights is the right next step. Want me to build the PM routine?</div>
+    <div class="bme">Yes please</div>
+    <div class="bai">PM skin cycling routine added to your Routine Edit. Uses your AHA on Night 1, a beginner 0.025% retinol on Night 2 (Rs 390 on Amazon), and just moisturiser on recovery nights.</div>
+    <div style="align-self:flex-start"><div style="border:.5px solid var(--color-border-secondary);border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;background:var(--color-background-secondary)" onclick="go('pg-routine')">View in Routine Edit →</div></div>
+  </div>
+  <div class="chat-bar"><div class="mic-b">🎙</div><div class="chat-box"><span class="chat-txt">Ask anything about beauty...</span></div><div class="send-b" style="background:#993C1D">↑</div></div>
+</div>
+
+</div>
+</div></div>
+</div>
+
+<div style="margin-top:14px;text-align:center;font-size:11px;color:var(--color-text-secondary);line-height:1.8">
+  <span style="font-weight:500;color:var(--color-text-primary)">Full flow:</span> Home → any assistant → all tools work → ← returns home<br>
+  Dressing Room: both tabs work · filter occasions · tap "Try on →" · change colours in result<br>
+  Beauty Magazine: all 4 tools open fully · Ingredient Stories links to Routine Edit and Price Watch
+</div>
+
+<script>
+const hist=[];
+function go(id){
+  const cur=document.querySelector('.pg.active');
+  if(cur&&cur.id!==id){cur.classList.remove('active');cur.classList.add('behind');hist.push(cur.id)}
+  const nxt=document.getElementById(id);
+  if(nxt){nxt.classList.remove('behind');nxt.classList.add('active')}
+}
+function back(){
+  const cur=document.querySelector('.pg.active');
+  if(cur)cur.classList.remove('active');
+  const prevId=hist.pop()||'pg-home';
+  const prev=document.getElementById(prevId);
+  if(prev){prev.classList.remove('behind');prev.classList.add('active')}
+}
+
+// Dressing Room tabs
+function drTab(n){
+  document.getElementById('dr-tb1').classList.toggle('act',n===1);
+  document.getElementById('dr-tb2').classList.toggle('act',n===2);
+  document.getElementById('dr-t1').style.display=n===1?'flex':'none';
+  document.getElementById('dr-t2').style.display=n===2?'block':'none';
+}
+
+// Occasion filter
+const occColors={sangeet:'#FAEEDA',office:'#E6F1FB',casual:'#EAF3DE',date:'#FBEAF0',navratri:'#EEEDFE'};
+let curOcc='sangeet';
+function filterOcc(occ,el){
+  ['sangeet','office','casual','date','navratri'].forEach(o=>{
+    const c=document.getElementById('occ-'+o);
+    const cd=document.getElementById('occ-'+o+'-cards');
+    if(c)c.style.background=o===occ?(occColors[o]||'var(--color-background-secondary)'):'var(--color-background-secondary)';
+    if(cd)cd.style.display=o===occ?'block':'none';
+  });
+  curOcc=occ;
+}
+
+// Try-on
+let selColor='#EF9F27';
+let selName='Sangeet Fusion';
+function selectOutfit(color,name){selColor=color;selName=name}
+function selectAndTryon(color,name){
+  selColor=color;selName=name;
+  document.getElementById('dr-no-look').style.display='none';
+  const hl=document.getElementById('dr-has-look');
+  hl.style.display='flex';
+  document.getElementById('look-swatch').style.background=color;
+  document.getElementById('look-name').textContent=name;
+  drTab(2);
+  document.getElementById('dr-upload').style.display='block';
+  document.getElementById('dr-result').style.display='none';
+}
+function doTryon(){
+  document.getElementById('dr-upload').style.display='none';
+  document.getElementById('dr-result').style.display='block';
+  document.getElementById('outfit-overlay').setAttribute('fill',selColor);
+  document.getElementById('tryon-vis').style.background=selColor+'22';
+}
+function resetTryon(){
+  document.getElementById('dr-upload').style.display='block';
+  document.getElementById('dr-result').style.display='none';
+}
+function chgColor(color){
+  selColor=color;
+  document.getElementById('outfit-overlay').setAttribute('fill',color);
+  document.getElementById('tryon-vis').style.background=color+'22';
+  document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('sel'));
+  event.target.classList.add('sel');
+}
+
+// init
+filterOcc('sangeet',null);
+</script>
